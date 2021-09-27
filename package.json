@@ -10,16 +10,33 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:whats-the-text.helloWorld"
+		"onLanguage:javascript",
+		"onLanguage:typescript",
+		"onLanguage:typescriptreact",
+		"onLanguage:javascriptreact"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "whats-the-text.helloWorld",
-				"title": "Hello World"
+				"category": "What's the text",
+				"title": "Enable Whats The Text",
+				"command": "whats-the-text.enable"
+			},
+			{
+				"category": "What's the text",
+				"title": "Disable Whats The Text",
+				"command": "whats-the-text.disable"
 			}
-		]
+		],
+		"configuration": {
+			"properties": {
+				"whats-the-text.enable": {
+					"type": "boolean",
+					"default": true
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
