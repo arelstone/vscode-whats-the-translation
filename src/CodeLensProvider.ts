@@ -11,7 +11,7 @@ export class CodelensProvider implements vscode.CodeLensProvider {
     private readonly fileGlob = vscode.workspace.getConfiguration(C.id).get('file-glob') || null;
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
-    private values: Record<string, string> = {};
+    private translations: Record<string, string> = {};
 
     constructor() {
         vscode.workspace.onDidChangeConfiguration((_) => {
@@ -23,7 +23,12 @@ export class CodelensProvider implements vscode.CodeLensProvider {
         } 
     }
 
-    public provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.CodeLens[] | Thenable<vscode.CodeLens[]> {
+    // @TODO: Not sure if using require is the best approach
+    private fileContent = async () => {
+        return vscode.workspace.findFiles(this.fileGlob as string, '**/node_modules/**', 1).then(file => require(file[0].path));
+    };
+
+    public async provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): Promise<vscode.CodeLens[]> {
         if (vscode.workspace.getConfiguration(C.id).get("enable", true)) {
             this.codeLenses = [];
             const regex = new RegExp(this.regex);
@@ -37,6 +42,14 @@ export class CodelensProvider implements vscode.CodeLensProvider {
                 const range = document.getWordRangeAtPosition(position, new RegExp(this.regex));   
                 if (range) {
                     this.codeLenses.push(new vscode.CodeLens(range));
+
+                    if (!this.translations[range.start.line]) {
+                        this.translations = {
+                            ...this.translations,
+                            [range.start.line]: (await this.fileContent())[matches[1]]
+                        };
+                    }
+                    
                 }
             }
             return this.codeLenses;
@@ -44,10 +57,10 @@ export class CodelensProvider implements vscode.CodeLensProvider {
         return [];
     }
 
-    public resolveCodeLens(codeLens: vscode.CodeLens, token: vscode.CancellationToken) {
+    public resolveCodeLens(codeLens: vscode.CodeLens, token: vscode.CancellationToken) {        
         if (vscode.workspace.getConfiguration(C.id).get("enable", true)) {
             codeLens.command = {
-                title: "THIS IS A TRANSLATED VALUE",
+                title: this.translations[codeLens.range.start.line],
                 command: `${C.id}.codelensAction`
             };
 

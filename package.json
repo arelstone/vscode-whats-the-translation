@@ -33,7 +33,7 @@
 			"title": "What's the text",
 			"properties": {
 				"whats-the-text.file-glob": {
-					"title": "Glob of what trantranslations file should be read",
+					"title": "Glob for the file with all of your translated values",
 					"type": "string",
 					"default": null,
 					"required": true
