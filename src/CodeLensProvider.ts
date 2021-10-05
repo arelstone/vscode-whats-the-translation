@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as C from './constants';
 
 /**
  * CodelensProvider
@@ -6,22 +7,24 @@ import * as vscode from 'vscode';
 export class CodelensProvider implements vscode.CodeLensProvider {
 
     private codeLenses: vscode.CodeLens[] = [];
-    private regex: RegExp;
+    private regex: RegExp = /I18n\.t\('(\w*)'/gmi;
+    private readonly fileGlob = vscode.workspace.getConfiguration(C.id).get('file-glob') || null;
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
+    private values: Record<string, string> = {};
 
     constructor() {
-        // this.regex = /(.+)/g;
-        this.regex = /I18n\.t\('(\w*)'/gmi;
-
         vscode.workspace.onDidChangeConfiguration((_) => {
             this._onDidChangeCodeLenses.fire();
         });
+        
+        if (!this.fileGlob) {
+            vscode.window.showErrorMessage(`${C.name} - file-glob is not defined. Please add it to settings.json-file`);
+        } 
     }
 
     public provideCodeLenses(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.CodeLens[] | Thenable<vscode.CodeLens[]> {
-
-        if (vscode.workspace.getConfiguration("whats-the-text").get("enable", true)) {
+        if (vscode.workspace.getConfiguration(C.id).get("enable", true)) {
             this.codeLenses = [];
             const regex = new RegExp(this.regex);
             const text = document.getText();
@@ -31,7 +34,7 @@ export class CodelensProvider implements vscode.CodeLensProvider {
                 const line = document.lineAt(document.positionAt(matches.index).line);
                 const indexOf = line.text.indexOf(matches[0]);
                 const position = new vscode.Position(line.lineNumber, indexOf);
-                const range = document.getWordRangeAtPosition(position, new RegExp(this.regex));
+                const range = document.getWordRangeAtPosition(position, new RegExp(this.regex));   
                 if (range) {
                     this.codeLenses.push(new vscode.CodeLens(range));
                 }
@@ -42,13 +45,12 @@ export class CodelensProvider implements vscode.CodeLensProvider {
     }
 
     public resolveCodeLens(codeLens: vscode.CodeLens, token: vscode.CancellationToken) {
-        if (vscode.workspace.getConfiguration("whats-the-text").get("enable", true)) {
+        if (vscode.workspace.getConfiguration(C.id).get("enable", true)) {
             codeLens.command = {
                 title: "THIS IS A TRANSLATED VALUE",
-                // tooltip: "Tooltip provided by sample extension",
-                command: "whats-the-text.codelensAction",
-                arguments: ["Argument 1", false]
+                command: `${C.id}.codelensAction`
             };
+
             return codeLens;
         }
         return null;

@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import { CodelensProvider } from './CodeLensProvider';
+import * as C from './constants';
 
 let disposables: vscode.Disposable[] = [];
 
-export function activate(context: vscode.ExtensionContext) {	
+// TODO: Add check if config.file-path has been provided
+export async function activate(context: vscode.ExtensionContext) {		
 	const codelensProvider = new CodelensProvider();
 
 	vscode.languages.registerCodeLensProvider(
@@ -16,17 +18,18 @@ export function activate(context: vscode.ExtensionContext) {
 		codelensProvider
 	);
 
-	vscode.commands.registerCommand('whats-the-text.enable', () => {
-		vscode.workspace.getConfiguration('whats-the-text').update('enable', true, true);
+	vscode.commands.registerCommand(`${C.id}.enable`, () => {
+		vscode.workspace.getConfiguration(C.id).update('enable', true, true);
+		vscode.window.showInformationMessage(`${C.name} is enabled`);
 	});
 
-	vscode.commands.registerCommand('whats-the-text.disable', () => {
-		vscode.workspace.getConfiguration('whats-the-text').update('enable', false, true);
+	vscode.commands.registerCommand(`${C.id}.disable`, () => {
+		vscode.workspace.getConfiguration(C.id).update('enable', false, true);
 	});
 
-	vscode.commands.registerCommand('whats-the-text.codelensAction', (args: any) => {
-		vscode.window.showInformationMessage(`CodeLense action clicked with args=${args}`);
-	});
+	vscode.commands.registerCommand(`${C.id}.codelensAction`, (args: any) => {
+        vscode.window.showInformationMessage(`CodeLens action clicked with args=${args}`);
+    });
 }
 
 export function deactivate() {

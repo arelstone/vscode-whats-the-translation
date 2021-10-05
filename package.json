@@ -1,6 +1,6 @@
 {
-"name": "whats-the-text",
-"displayName": "whats-the-text",
+	"name": "whats-the-text",
+	"displayName": "whats-the-text",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -30,8 +30,16 @@
 			}
 		],
 		"configuration": {
+			"title": "What's the text",
 			"properties": {
+				"whats-the-text.file-glob": {
+					"title": "Glob of what trantranslations file should be read",
+					"type": "string",
+					"default": null,
+					"required": true
+				},
 				"whats-the-text.enable": {
+					"title": "Should The plugin be enabled",
 					"type": "boolean",
 					"default": true
 				}
