@@ -1,6 +1,7 @@
 {
-	"name": "whats-the-text",
-	"displayName": "whats-the-text",
+	"name": "whats-the-translation",
+	"displayName": "whats-the-translation",
+	"publisher": "arelstone",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -19,26 +20,26 @@
 	"contributes": {
 		"commands": [
 			{
-				"category": "What's the text",
-				"title": "Enable Whats The Text",
-				"command": "whats-the-text.enable"
+				"category": "What's the translations",
+				"title": "Enable",
+				"command": "whats-the-translation.enable"
 			},
 			{
-				"category": "What's the text",
-				"title": "Disable Whats The Text",
-				"command": "whats-the-text.disable"
+				"category": "What's the translations",
+				"title": "Disable",
+				"command": "whats-the-translation.disable"
 			}
 		],
 		"configuration": {
 			"title": "What's the text",
 			"properties": {
-				"whats-the-text.file-glob": {
+				"whats-the-translation.file-glob": {
 					"title": "Glob for the file with all of your translated values",
 					"type": "string",
 					"default": null,
 					"required": true
 				},
-				"whats-the-text.enable": {
+				"whats-the-translation.enable": {
 					"title": "Should The plugin be enabled",
 					"type": "boolean",
 					"default": true
@@ -47,24 +48,25 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "yarn run compile",
+		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"pretest": "yarn run compile && yarn run lint",
+		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.60.0",
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^9.0.0",
 		"@types/node": "14.x",
+		"@types/vscode": "^1.60.0",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
+		"@vscode/test-electron": "^1.6.2",
 		"eslint": "^7.32.0",
 		"glob": "^7.1.7",
 		"mocha": "^9.1.1",
 		"typescript": "^4.4.3",
-		"@vscode/test-electron": "^1.6.2"
+		"vsce": "^1.100.1"
 	}
 }

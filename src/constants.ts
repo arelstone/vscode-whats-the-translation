@@ -1,4 +1,3 @@
-import { workspace } from "vscode";
 
-export const name = 'What\'s the text';
-export const id = 'whats-the-text';
+export const name = 'What\'s the translation';
+export const id = 'whats-the-translation';
